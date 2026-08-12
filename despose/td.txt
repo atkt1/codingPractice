@@ -1,1 +1,2 @@
 
+find ~/.vscode-server ~/.config/Code ~/.vscode -iname "*chat*" -name "*.json" -mmin -1440 2>/dev/null | head -20
