@@ -13,3 +13,45 @@ cd /projects/d365-test-automation && .venv/bin/python scripts/agent_harvest.py s
 cd /projects/d365-test-automation && grep -c "→" field/test_data/navigation_paths.yaml
 
 cd /projects/d365-test-automation && .venv/bin/python scripts/agent_harvest.py nav list
+
+
+------
+
+cd /projects/d365-test-automation && .venv/bin/python scripts/agent_harvest.py scan
+
+B
+
+cd /projects/d365-test-automation && .venv/bin/python scripts/agent_harvest.py scan "Up next" "Connect sequence" "Create activity" "Manage your activities"
+
+JSON.stringify((()=>{let hosts=0;const tags={};const walk=r=>{for(const el of r.querySelectorAll('*')){if(el.shadowRoot){hosts++;tags[el.tagName]=(tags[el.tagName]||0)+1;walk(el.shadowRoot);}}};walk(document);return{shadowHosts:hosts,byTag:tags};})())
+
+JSON.stringify((()=>{const hits=[];const walk=(r,inShadow)=>{for(const el of r.querySelectorAll('*')){const al=(el.getAttribute&&(el.getAttribute('aria-label')||el.getAttribute('title')))||'';const txt=(el.textContent||'').trim();if(/create activity/i.test(al)||(/create activity/i.test(txt)&&el.children.length===0))hits.push({tag:el.tagName,role:el.getAttribute('role'),aria:al.slice(0,60),text:txt.slice(0,60),inShadow});if(el.shadowRoot)walk(el.shadowRoot,true);}};walk(document,false);return{count:hits.length,hits:hits.slice(0,10)};})())
+
+C
+
+cd /projects/d365-test-automation && .venv/bin/python scripts/agent_harvest.py scan "Task"
+
+JSON.stringify((()=>{const T='task';const Q='button,a,input,textarea,select,label,li,[role],[aria-label],[data-id],[data-testid],[data-automation-id],[title],[placeholder]';const A=['data-testid','data-automation-id','data-id','aria-label','name','placeholder','title'];const out=[];let i=0;for(const el of document.querySelectorAll(Q)){const at={};for(const a of A){const v=el.getAttribute(a);if(v)at[a]=v;}if(el.id)at.id=el.id;const text=(Object.values(at).join(' ')+' '+(el.textContent||'').replace(/\s+/g,' ').trim().slice(0,250)).toLowerCase();if(!text.includes(T))continue;const r=el.getBoundingClientRect(),st=getComputedStyle(el);if(!(r.width>0&&r.height>0&&st.visibility!=='hidden'&&st.display!=='none'))continue;i++;out.push({ordinal:i,tag:el.tagName,role:el.getAttribute('role'),aria:((el.getAttribute('aria-label')||el.getAttribute('title'))||'').slice(0,40),text:(el.textContent||'').trim().slice(0,40)});}return{visibleMatches:i,firstTwelve:out.slice(0,12)};})())
+
+D
+
+cd /projects/d365-test-automation && .venv/bin/python scripts/agent_harvest.py scan "Interactions" "Quick Actions" "Save" > /tmp/scan_size.json && wc -c /tmp/scan_size.json
+
+cd /projects/d365-test-automation && .venv/bin/python - <<'EOF'
+import json
+d = json.load(open('/tmp/scan_size.json'))
+raw = len(json.dumps(d)); ms = d.get('matches') or []
+n1 = sum(1 for m in ms for s in (m.get('sels') or []) if s.get('n') == 1)
+for m in ms:
+    sels = m.get('sels') or []
+    ones = [s for s in sels if s.get('n') == 1]
+    keep = ones[:2] if ones else sels[:1]
+    m['sels'] = keep
+    kept = {s.get('value') for s in keep}
+    m['attrs'] = {k: v for k, v in (m.get('attrs') or {}).items() if v not in kept}
+    if m.get('occluded') is not True:
+        m.pop('coveredBy', None)
+print(json.dumps({'matches': len(ms), 'uniqueSels': n1, 'rawBytes': raw,
+                  'compactBytes': len(json.dumps(d)),
+                  'reductionPct': round(100 * (1 - len(json.dumps(d)) / raw))}))
+EOF
