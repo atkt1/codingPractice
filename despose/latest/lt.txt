@@ -1,2 +1,56 @@
 
 grep -rn "personasecurityrolemapping" /projects/d365-test-automation/field /projects/d365-test-automation/core
+
+
+Title: Devpod egress: apps.powerapps.com:443 blocked (TLS reset) — breaks D365 Client API on UAT2
+
+Environment: devpod yellow-goose-b522a-688d7c867f-fhtr2
+
+Summary
+
+From this pod, HTTPS to apps.powerapps.com is dropped during the TLS handshake. DNS resolves, TCP connects, then the connection closes before the server sends its certificate. No HTTP proxy is configured in the pod and --noproxy changes nothing — consistent with hostname (SNI) based egress filtering.
+
+Evidence — network
+
+$ getent hosts apps.powerapps.com
+2603:1061:14:75::1  mr-z01.tm-azurefd.net apps.powerapps.com ...
+
+$ timeout 5 bash -c '</dev/tcp/apps.powerapps.com/443'
+TCP CONNECT OK
+
+$ openssl s_client -connect apps.powerapps.com:443 -servername apps.powerapps.com
+Connecting to 150.171.110.195
+CONNECTED(00000003)
+error:0A000126:SSL routines::unexpected eof while reading
+no peer certificate available
+
+$ curl https://apps.powerapps.com/apphost/e/.../clientsdkproxy?version=1
+curl: (35) OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to apps.powerapps.com:443
+
+$ env | grep -i proxy
+(no output)
+
+Evidence — application impact
+
+Browser capture from inside the pod. apps.powerapps.com fails in both environments; on UAT2 it becomes a user-facing failure:
+
+HOST : 	test3	: uat2
+
+fieldcrm-*.crm.dynamics.com	: test3 --> 407 requests, 1 error	: uat2 --> 496 requests, 4 errors
+apps.powerapps.com	: test3 -->9 requests, 9 failed	: uat2 --> 10 requests, 10 failed
+"The script … clientsdkproxy … didn't load correctly"	: uat2 --> test3 -->not raised	: raised
+Result	: test3 -->form usable	: uat2 --> error dialog, then navigates off the record
+
+Every request to the D365 tenant host succeeds — this is specific to apps.powerapps.com, not general internet loss.
+
+Impact
+
+apps.powerapps.com serves clientsdkproxy, the Dynamics 365 Client API bridge. On UAT2, components that depend on it (TeamsDialer layout host, Sales AI) fail to initialise, the user gets an error dialog, and the form navigates back to the dashboard — blocking automated UI testing of Field CRM from the pod. test3 does not currently host those components, so the same failed request is silent there; it will surface as test3 gains them.
+
+The same flows work from a corporate laptop, confirming the application, URL and credentials are fine. The only difference is pod egress.
+
+Request
+
+Allow outbound HTTPS (443) to apps.powerapps.com from this devpod.
+
+Lower priority, same root cause, cosmetic/telemetry only: *.cdn.office.net, static2.sharepointonline.com, config.edge.skype.com, fpc.msedge.net, *.sales.ai.dynamics.com.
