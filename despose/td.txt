@@ -1,1 +1,13 @@
 cd /projects/d365-test-automation && .venv/bin/python -m pytest field/tests/web/test_life_events_family_goal.py -v -s --no-header --dist=no -p no:allure_pytest --import-mode=importlib -o addopts=
+
+
+env | grep -i proxy
+
+curl -sS -o /dev/null -w "direct=%{http_code}\n" --max-time 15 "https://apps.powerapps.com/apphost/e/9b1f30fe-f32e-e94b-807e-f882add9d010/clientsdkproxy?version=1"
+
+curl -sS -o /dev/null -w "noproxy=%{http_code}\n" --max-time 15 --noproxy '*' "https://apps.powerapps.com/apphost/e/9b1f30fe-f32e-e94b-807e-f882add9d010/clientsdkproxy?version=1"
+
+
+launch(args=["--disable-quic"])
+
+cd /projects/d365-test-automation && grep -rn "connect_over_cdp\|chromium.launch\|fresh_login" conftest.py core/ | head -20
