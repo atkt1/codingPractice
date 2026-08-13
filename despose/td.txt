@@ -81,6 +81,7 @@ Two things they'll likely ask, so you have the answers ready:
 
 
 cd /projects/d365-test-automation && .venv/bin/python -m pytest field/tests/web/test_life_events_family_goal.py -v -s --no-header --dist=no -p no:allure_pytest --import-mode=importlib -o addopts= 2>&1 | tee /tmp/test3-net.log
+cd /projects/d365-test-automation && .venv/bin/python -m pytest field/tests/web/test_life_events_family_goal.py -v -s --no-header --dist=no -p no:allure_pytest --import-mode=importlib -o addopts=
 
 grep -nE "powerapps|clientsdk" /tmp/test3-net.log
 
