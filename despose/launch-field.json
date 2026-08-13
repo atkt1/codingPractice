@@ -1,0 +1,129 @@
+{
+  // Field pod debug configurations for d365-test-automation.
+  //
+  // INSTALL AT:  /projects/.vscode/launch.json
+  // NOT at      /projects/d365-test-automation/.vscode/launch.json
+  //
+  // The VS Code workspace root is /projects, so ${workspaceFolder} == /projects.
+  // VS Code reads .vscode/ ONLY at the workspace root — the same reason the
+  // mcp.json at /projects/.vscode/ is the one in effect. A launch.json inside
+  // d365-test-automation/.vscode/ is never read.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // F5 with a test file focused. Runs every test in that file.
+      "name": "Field — Debug: Current Test File",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "${file}",
+        "-v",
+        "--no-header",
+        "--dist=no",
+        "-p", "no:allure_pytest",
+        "--tb=short",
+        "--import-mode=importlib",
+        // Blanks addopts from pytest.ini. Without this, an addopts containing
+        // -n auto (xdist) runs tests in worker subprocesses the debugger is not
+        // attached to, and breakpoints are NEVER hit — the run just completes.
+        "-o", "addopts="
+      ],
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/d365-test-automation",
+        "BYPASS_SESSION_REUSE": "true"
+      },
+      "cwd": "${workspaceFolder}/d365-test-automation",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/d365-test-automation/.venv/bin/python"
+    },
+    {
+      // Prompts for a test name, runs matching tests in the focused file.
+      // Wires up the "inputs" block below — the config you were sent defines
+      // that prompt but never references it, so there it does nothing and the
+      // test name stays hardcoded.
+      "name": "Field — Debug: Test by Name (prompts)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "${file}",
+        "-v",
+        "-k", "${input:testName}",
+        "--no-header",
+        "--dist=no",
+        "-p", "no:allure_pytest",
+        "--tb=long",
+        "--import-mode=importlib",
+        "-o", "addopts="
+      ],
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/d365-test-automation",
+        "BYPASS_SESSION_REUSE": "true"
+      },
+      "cwd": "${workspaceFolder}/d365-test-automation",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/d365-test-automation/.venv/bin/python"
+    },
+    {
+      // Whole field web suite, serial, debuggable. Slow — use for a full pass.
+      "name": "Field — Debug: All field/tests/web",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "field/tests/web",
+        "-v",
+        "--no-header",
+        "--dist=no",
+        "-p", "no:allure_pytest",
+        "--tb=short",
+        "--import-mode=importlib",
+        "-o", "addopts="
+      ],
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/d365-test-automation",
+        "BYPASS_SESSION_REUSE": "true"
+      },
+      "cwd": "${workspaceFolder}/d365-test-automation",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/d365-test-automation/.venv/bin/python"
+    },
+    {
+      // Collection only — proves imports and fixtures resolve, opens no browser.
+      // Same check Phase D of the automation agent runs.
+      "name": "Field — Collect only (no browser)",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "field/tests/web",
+        "--collect-only",
+        "-q",
+        "--no-header",
+        "--dist=no",
+        "-p", "no:allure_pytest",
+        "--import-mode=importlib",
+        "-o", "addopts="
+      ],
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/d365-test-automation"
+      },
+      "cwd": "${workspaceFolder}/d365-test-automation",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "python": "${workspaceFolder}/d365-test-automation/.venv/bin/python"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "testName",
+      "description": "Test function name or partial (passed to pytest -k)",
+      "type": "promptString",
+      "default": "test_001"
+    }
+  ]
+}
