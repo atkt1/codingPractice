@@ -1,3 +1,10 @@
 grep -n "RemoteForward\|Host \*-devpod" ~/.ssh/config
 
 findstr /n /c:"RemoteForward" /c:"Host *-devpod" %USERPROFILE%\.ssh\config
+
+
+cd /projects/d365-test-automation && ls field/pages/ && wc -l field/pages/*.py
+
+cd /projects/d365-test-automation && .venv/bin/python scripts/agent_harvest.py scan "Interactions" "timeline" "New Activity" "Create activity"
+
+cd /projects/d365-test-automation && .venv/bin/python scripts/agent_harvest.py scan "My Tasks" "Appointments" "Task" "Phone Call" "Email"
