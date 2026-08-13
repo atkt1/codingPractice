@@ -8,3 +8,8 @@ cd /projects/d365-test-automation && ls field/pages/ && wc -l field/pages/*.py
 cd /projects/d365-test-automation && .venv/bin/python scripts/agent_harvest.py scan "Interactions" "timeline" "New Activity" "Create activity"
 
 cd /projects/d365-test-automation && .venv/bin/python scripts/agent_harvest.py scan "My Tasks" "Appointments" "Task" "Phone Call" "Email"
+
+
+cd /projects/d365-test-automation && grep -c "→" field/test_data/navigation_paths.yaml
+
+cd /projects/d365-test-automation && .venv/bin/python scripts/agent_harvest.py nav list
