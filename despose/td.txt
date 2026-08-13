@@ -11,3 +11,13 @@ curl -sS -o /dev/null -w "noproxy=%{http_code}\n" --max-time 15 --noproxy '*' "h
 launch(args=["--disable-quic"])
 
 cd /projects/d365-test-automation && grep -rn "connect_over_cdp\|chromium.launch\|fresh_login" conftest.py core/ | head -20
+
+
+
+For ticket:
+
+getent hosts apps.powerapps.com
+
+timeout 5 bash -c '</dev/tcp/apps.powerapps.com/443' && echo "TCP CONNECT OK" || echo "TCP CONNECT FAIL"
+
+timeout 10 openssl s_client -connect apps.powerapps.com:443 -servername apps.powerapps.com </dev/null 2>&1 | head -8
