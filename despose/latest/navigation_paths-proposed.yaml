@@ -1,0 +1,184 @@
+# Known navigation paths for the field automation agent.
+# Commit as: field/test_data/navigation_paths.yaml
+#
+# The agent reads this file in Step 2a (ANALYZE) with:
+#     cd /projects/d365-test-automation && .venv/bin/python scripts/agent_harvest.py nav list
+# A row whose `feature` OR any `alias` matches an acceptance criterion's feature
+# area — AND whose `path` ends at what that AC actually tests — makes the AC
+# NAV-KNOWN: no live exploration, no question to the user.
+#
+# The agent appends confirmed paths with:
+#     ... agent_harvest.py nav add --feature "..." --path "..." --anchor "..." \
+#         --aliases "a,b,c" --source issue|codebase|exploration|user
+# It never rewrites or deletes rows. Prune or correct entries by hand in a PR.
+#
+# ALIASES MUST BE SPECIFIC. They are matched case- and punctuation-insensitively
+# against AC text, so a bare common word ("contact", "client", "activity", "tags")
+# will match acceptance criteria for unrelated features and send the agent down
+# the wrong path with no question asked. Prefer multi-word phrases that only that
+# feature would use. The script enforces the other side of this: a new row whose
+# feature OR aliases collide with an existing row's terms is refused with
+# PATH_CONFLICT rather than creating a second row answering to the same words.
+#
+# TWO CONVENTIONS THIS FILE FOLLOWS
+#   1. A path ENDS AT THE TRIGGER, never at a menu/dropdown option. Options are
+#      `pick`'s second argument, taken from the AC text. Putting option text in a
+#      path invites the agent to `scan` for it, which Section 2 forbids.
+#   2. Where the same words name both a contact-record tab and a left-nav list,
+#      aliases say which ("... tab" vs "... list"). An AC using the bare words
+#      matches neither and becomes a question — deliberately, because guessing
+#      between them is silent and wrong.
+#
+# Fields
+#   feature  : canonical name of the feature area (unique; dedupe key)
+#   aliases  : specific multi-word terms issues use for it
+#   path     : UI steps in "A → B → C" form, ending at the feature itself
+#   anchor   : the repo file that already implements or exercises this path
+#   source   : seed | issue | codebase | exploration | user
+#   verified : ISO date the path was last confirmed
+#
+# NOTE: `verified` is documentation only — nothing in the agent gates on it.
+# A wrong row is trusted silently, so correctness here is load-bearing.
+
+paths:
+  # ---------------------------------------------------------------- entry point
+  - feature: "Contact record"
+    aliases: ["client record", "customer record", "open a contact", "global search"]
+    path: "Global Search → contact name"
+    anchor: "field/actions/my_dashboard_actions.py"
+    source: seed
+    verified: "2026-08-13"
+
+  - feature: "Contacts list"
+    aliases: ["active contacts", "contacts grid", "clients list", "open the contacts page"]
+    path: "Left nav → Contacts"
+    anchor: "field/actions/contact_actions.py"
+    source: codebase
+    verified: "2026-08-13"
+
+  # ------------------------------------------------------- contact record: tabs
+  - feature: "Contact Details tab"
+    aliases: ["contact details tab", "telecom section", "communication type",
+              "phone record on contact", "email record on contact", "website record on contact"]
+    path: "Contact record → Contact Details"
+    anchor: "field/actions/contact_detail_telecom_actions.py"
+    source: codebase
+    verified: "2026-08-13"
+
+  - feature: "ACE Relationship tab"
+    aliases: ["ace relationship tab"]
+    path: "Contact record → ACE Relationship"
+    anchor: "field/actions/ace_relationship_actions.py"
+    source: codebase
+    verified: "2026-08-13"
+
+  - feature: "Relationship Interactions tab"
+    aliases: ["relationship interactions tab"]
+    path: "Contact record → Relationship Interactions"
+    anchor: "field/actions/relationship_interactions_actions.py"
+    source: codebase
+    verified: "2026-08-13"
+
+  - feature: "Service Model tab"
+    aliases: ["service model tab"]
+    path: "Contact record → Service Model"
+    anchor: "field/actions/contact_actions.py"
+    source: codebase
+    verified: "2026-08-13"
+
+  - feature: "Marketing Lists tab on contact"
+    aliases: ["marketing lists tab", "add to marketing list"]
+    path: "Contact record → Marketing Lists"
+    anchor: "field/actions/contact_actions.py"
+    source: codebase
+    verified: "2026-08-13"
+
+  # --------------------------------------------- contact record: Summary panels
+  # Trigger confirmed by scan: button, data-id="notescontrol-action_bar_add_command",
+  # title="Create a timeline record." (trailing period in the DOM; the path omits it and
+  # still matches). Menu options — Activity, Appointment, Email, Phone Call,
+  # Recurring Appointment, Task, Detailed Notes — are `pick` arguments, not path steps.
+  - feature: "Contact activity timeline"
+    aliases: ["interactions timeline", "create a timeline record", "timeline record on contact",
+              "launch interaction from timeline", "activity on a contact record"]
+    path: "Contact record → Interactions → Create a timeline record"
+    anchor: "field/actions/appointment_actions.py"
+    source: codebase
+    verified: "2026-08-13"
+
+  # No anchor: the Quick Actions tests were removed and this is upcoming work. The row
+  # stays so the first issue in that area arrives NAV-KNOWN. Options confirmed verbatim
+  # (they are `pick` arguments, never scan terms):
+  #   "Create Task to Send a birthday card"
+  #   "Create Task for TA to schedule meeting"
+  - feature: "Quick Actions on contact"
+    aliases: ["quick actions", "quick actions menu",
+              "create task to send a birthday card", "create task for ta to schedule meeting"]
+    path: "Contact record → Quick Actions"
+    source: user
+    verified: "2026-08-13"
+
+  - feature: "Life Goals and Milestones"
+    aliases: ["life goals and milestones", "life events", "life event", "education event",
+              "retirement event", "college savings event", "financial planning event",
+              "real estate event", "family event"]
+    path: "Contact record → Life Goals and Milestones"
+    anchor: "field/actions/life_events_actions.py"
+    source: codebase
+    verified: "2026-08-13"
+
+  - feature: "Key Notes"
+    aliases: ["key note", "key notes panel"]
+    path: "Contact record → Key Notes"
+    anchor: "field/actions/key_notes_actions.py"
+    source: seed
+    verified: "2026-08-13"
+
+  # "Create activity" was NOT in the DOM on a 22s scan of this page — alias withheld
+  # until confirmed. Do not add it back on the strength of a screenshot alone.
+  - feature: "Up next"
+    aliases: ["up next", "next best action", "connect sequence"]
+    path: "Contact record → Up next"
+    anchor: "field/actions/up_next_tile_actions.py"
+    source: seed
+    verified: "2026-08-13"
+
+  # ------------------------------------------------------ user level (left nav)
+  - feature: "My Tasks and Appointments"
+    aliases: ["my activities view", "all phone calls view", "upcoming client calls",
+              "my pending emails", "my draft appointments", "my tasks past due",
+              "activity type filter"]
+    path: "Left nav → My Tasks and Appointments"
+    anchor: "field/actions/my_activities_actions.py"
+    source: codebase
+    verified: "2026-08-13"
+
+  - feature: "My Dashboard"
+    aliases: ["advisor dashboard", "upcoming appointments grid", "my tasks today"]
+    path: "Left nav → My Dashboard"
+    anchor: "field/actions/my_dashboard_actions.py"
+    source: codebase
+    verified: "2026-08-13"
+
+  - feature: "My Notes"
+    aliases: ["my notes form", "notes from ribbon"]
+    path: "Left nav → My Notes"
+    anchor: "field/actions/my_notes_actions.py"
+    source: codebase
+    verified: "2026-08-13"
+
+  # ------------------------------------------------------------- Admin area
+  - feature: "Interest Tags"
+    aliases: ["interest tag", "active interest tags"]
+    path: "Change area → Admin → Interest Tags"
+    anchor: "field/actions/interest_tag_actions.py"
+    source: codebase
+    verified: "2026-08-13"
+
+  - feature: "Marketing Lists in Admin"
+    aliases: ["active marketing lists", "create marketing list", "marketing list members",
+              "campaign list"]
+    path: "Change area → Admin → Marketing Lists"
+    anchor: "field/actions/marketing_list_actions.py"
+    source: codebase
+    verified: "2026-08-13"
