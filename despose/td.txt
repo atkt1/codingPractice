@@ -1,2 +1,1 @@
-
-find ~/.vscode-server ~/.config/Code ~/.vscode -iname "*chat*" -name "*.json" -mmin -1440 2>/dev/null | head -20
+cd /projects/d365-test-automation && .venv/bin/python -m pytest field/tests/web/test_life_events_family_goal.py -v -s --no-header --dist=no -p no:allure_pytest --import-mode=importlib -o addopts=
