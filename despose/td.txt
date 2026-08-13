@@ -21,3 +21,58 @@ getent hosts apps.powerapps.com
 timeout 5 bash -c '</dev/tcp/apps.powerapps.com/443' && echo "TCP CONNECT OK" || echo "TCP CONNECT FAIL"
 
 timeout 10 openssl s_client -connect apps.powerapps.com:443 -servername apps.powerapps.com </dev/null 2>&1 | head -8
+
+
+
+Title: Devpod cannot reach apps.powerapps.com (443) — TLS connection reset, blocks D365 UI test automation
+
+Environment: devpod yellow-goose-b522a-688d7c867f-fhtr2
+
+What's wrong
+
+From this pod, HTTPS connections to apps.powerapps.com are closed during the TLS handshake. DNS resolves and TCP connects, but the connection is dropped before the server presents its certificate. No HTTP proxy is configured in the pod, and bypassing proxy settings makes no difference — which points to hostname-based (SNI) filtering on egress rather than a proxy or DNS problem.
+
+Why it matters
+
+apps.powerapps.com hosts clientsdkproxy, the Dynamics 365 Client API bridge. Without it, Field CRM record forms fail to initialise, show "The script … clientsdkproxy?version=1 didn't load correctly", and navigate the user away from the record. This blocks all automated UI testing of Field CRM from the devpod.
+
+Evidence : 
+
+$ getent hosts apps.powerapps.com
+2603:1061:14:75::1  mr-z01.tm-azurefd.net apps.powerapps.com ...
+
+$ timeout 5 bash -c '</dev/tcp/apps.powerapps.com/443'
+TCP CONNECT OK
+
+$ openssl s_client -connect apps.powerapps.com:443 -servername apps.powerapps.com
+Connecting to 150.171.110.195
+CONNECTED(00000003)
+error:0A000126:SSL routines::unexpected eof while reading
+no peer certificate available
+Negotiated TLS1.3 group: <NULL>
+
+$ curl https://apps.powerapps.com/apphost/e/.../clientsdkproxy?version=1
+curl: (35) OpenSSL SSL_connect: SSL_ERROR_SYSCALL in connection to apps.powerapps.com:443
+
+$ env | grep -i proxy
+(no output)
+
+
+Already ruled out
+
+The same tests pass when run against a browser on a corporate laptop, so the application, the URL and the credentials are all fine — the only difference is pod egress. fieldcrm-uat2.crm.dynamics.com is reachable from the pod without issue, so this is host-specific, not a general internet block.
+
+Request
+
+Allow outbound HTTPS (443) to apps.powerapps.com from this devpod.
+
+Secondary — these also fail and cause console noise and missing icons, but do not block testing: *.cdn.office.net, static2.sharepointonline.com, config.edge.skype.com, fpc.msedge.net, *.sales.ai.dynamics.com.
+
+
+Two things they'll likely ask, so you have the answers ready:
+
+"Is it DNS?" No — getent resolves it, and openssl reached the IP and completed a TCP connection.
+
+"Have you set the proxy?" There is no proxy in the pod to set; env | grep -i proxy is empty and curl --noproxy '*' behaves identically.
+
+
