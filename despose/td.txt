@@ -76,3 +76,13 @@ Two things they'll likely ask, so you have the answers ready:
 "Have you set the proxy?" There is no proxy in the pod to set; env | grep -i proxy is empty and curl --noproxy '*' behaves identically.
 
 
+
+-----------
+
+
+cd /projects/d365-test-automation && .venv/bin/python -m pytest field/tests/web/test_life_events_family_goal.py -v -s --no-header --dist=no -p no:allure_pytest --import-mode=importlib -o addopts= 2>&1 | tee /tmp/test3-net.log
+
+grep -nE "powerapps|clientsdk" /tmp/test3-net.log
+
+NETDEBUG_TRACE=1 .venv/bin/python -m pytest field/tests/web/test_life_events_family_goal.py -v -s --no-header --dist=no -p no:allure_pytest --import-mode=importlib -o addopts=
+
