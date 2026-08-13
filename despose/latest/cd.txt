@@ -1,1 +1,3 @@
 grep -n "RemoteForward\|Host \*-devpod" ~/.ssh/config
+
+findstr /n /c:"RemoteForward" /c:"Host *-devpod" %USERPROFILE%\.ssh\config
