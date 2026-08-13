@@ -1,1 +1,2 @@
 
+grep -rn "personasecurityrolemapping" /projects/d365-test-automation/field /projects/d365-test-automation/core
