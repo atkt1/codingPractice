@@ -87,3 +87,11 @@ grep -nE "powerapps|clientsdk" /tmp/test3-net.log
 
 NETDEBUG_TRACE=1 .venv/bin/python -m pytest field/tests/web/test_life_events_family_goal.py -v -s --no-header --dist=no -p no:allure_pytest --import-mode=importlib -o addopts=
 
+
+
+I’m sorry to bring this to you, but I feel this has now gone beyond a difference of opinion on process. I am increasingly concerned about the way disagreements are being handled and the repeated friction it is creating within the team.
+I have tried to ignore several instances and work around them, but the pattern is continuing. Issues are repeatedly raised in a confrontational manner, discussions that should be relatively straightforward become unnecessarily difficult, and in some cases suggestions are raised but there is resistance when it comes to following through on the agreed approach.
+I want to be clear that I am not trying to assign tasks to anyone or micromanage the team. Tasks are being picked independently. My expectation is simply that once we agree on a process or responsibility, we work within it and raise disagreements constructively.
+At this point, I am finding the working relationship increasingly difficult and I don’t think repeatedly handling this kind of friction between ourselves is productive. I would appreciate your intervention and some clarity around ownership and responsibilities. I am not asking for complete control of automation, and everyone should continue to contribute, but someone needs to be able to drive it with a reasonable level of cooperation from the team.
+If this way of working continues, I would also prefer that our responsibilities are structured in a way that reduces the dependency on us having to work closely together.
+
