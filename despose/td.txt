@@ -87,7 +87,3 @@ grep -nE "powerapps|clientsdk" /tmp/test3-net.log
 
 NETDEBUG_TRACE=1 .venv/bin/python -m pytest field/tests/web/test_life_events_family_goal.py -v -s --no-header --dist=no -p no:allure_pytest --import-mode=importlib -o addopts=
 
-
-Thanks Abhinav. I don't intend to reopen the earlier discussion over email. My mail was to document the working arrangement agreed during our call with Swapnil and plan the upcoming sprint.
-
-Please confirm your available bandwidth for the Field UI Automation items. If you believe my recap materially differs from what was agreed in the call, please identify the specific point, and Swapnil can clarify it.
