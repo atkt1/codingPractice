@@ -89,9 +89,69 @@ NETDEBUG_TRACE=1 .venv/bin/python -m pytest field/tests/web/test_life_events_fam
 
 
 
-I’m sorry to bring this to you, but I feel this has now gone beyond a difference of opinion on process. I am increasingly concerned about the way disagreements are being handled and the repeated friction it is creating within the team.
-I have tried to ignore several instances and work around them, but the pattern is continuing. Issues are repeatedly raised in a confrontational manner, discussions that should be relatively straightforward become unnecessarily difficult, and in some cases suggestions are raised but there is resistance when it comes to following through on the agreed approach.
-I want to be clear that I am not trying to assign tasks to anyone or micromanage the team. Tasks are being picked independently. My expectation is simply that once we agree on a process or responsibility, we work within it and raise disagreements constructively.
-At this point, I am finding the working relationship increasingly difficult and I don’t think repeatedly handling this kind of friction between ourselves is productive. I would appreciate your intervention and some clarity around ownership and responsibilities. I am not asking for complete control of automation, and everyone should continue to contribute, but someone needs to be able to drive it with a reasonable level of cooperation from the team.
-If this way of working continues, I would also prefer that our responsibilities are structured in a way that reduces the dependency on us having to work closely together.
+Subject: Field UI Automation – Working Model and Sprint Planning
+
+Hi Abhinav,
+
+Following our discussion with Swapnil, I am documenting the working model communicated and agreed during the call so that we start the upcoming sprint with clear ownership and avoid ambiguity around planning, execution and reporting.
+
+1. Field UI Automation ownership
+
+As agreed in the call, I will own the planning, prioritisation and coordination of Field UI Automation.
+
+Accordingly, Field UI Automation work taken up during the sprint will be aligned to that plan. Suggestions and technical inputs are of course welcome, but any proposed change in priority or planned work should first be discussed and aligned rather than independently changing the agreed plan.
+
+You will continue to independently own and drive Backend Data Automation, including its planning and prioritisation. I will not interfere with the planning of that area.
+
+This keeps the two areas clearly separated while allowing us to collaborate wherever required.
+
+2. Upcoming sprint
+
+For the sprint starting Monday, please share your available bandwidth for Field UI Automation, taking into account your Backend Data Automation commitments.
+
+Based on the current UI Automation priorities, I am considering the following items for you:
+
+[Task 1]
+[Task 2]
+
+Once you confirm your bandwidth, I will finalise the corresponding work on the board.
+
+If you see a constraint against taking up either item, please mention the specific constraint along with your bandwidth so that I can account for it during planning.
+
+3. Existing failing tests
+
+There are some currently failing tests associated with automation work previously handled by you. I will share the specific list separately.
+
+Please investigate those failures across TEST3, TEST4 and UAT2 and address the issues where the failure is attributable to the automation implementation.
+
+Where a failure is due to environment, test data, application behaviour or another external dependency, please capture that clearly against the respective item. I will coordinate with the relevant owner where required.
+
+For failures related to the remaining automation tests, I will handle the coordination and reach out to the respective responsible individuals.
+
+4. Weekly automation status
+
+I send the consolidated weekly automation status every Friday at 7:30 PM IST.
+
+Please therefore send me your completed test-script count by 6:30 PM IST every Friday.
+
+I will not send separate reminders for this recurring update. If I do not receive the information by the reporting cut-off, that week's status will be reported as “0 confirmed completions reported” for your contribution, as I will not have a confirmed count available for consolidation.
+
+Any update received subsequently can naturally be reflected in the next reporting cycle where applicable.
+
+5. Day-to-day communication
+
+We also discussed maintaining direct and professional communication when questions or concerns arise.
+
+For routine clarifications involving another team member, we should first make a reasonable attempt to clarify the matter directly with the concerned person. If the matter remains unresolved, requires a decision, or genuinely needs management involvement, it can then be raised through the appropriate channel with the relevant people included.
+
+Similarly, I suggest we keep Teams, email and MR discussions focused on the technical issue, facts, expected action and resolution, without personal or confrontational remarks. I will follow the same approach from my side.
+
+The intent of this email is not to reopen the previous disagreement. It is to document the working arrangement established during our call with Swapnil and provide a clear operating model going forward.
+
+For now, I only need your available bandwidth for the upcoming sprint.
+
+If any point above materially differs from the working arrangement agreed during our call with Swapnil, please identify that specific point. Otherwise, I will proceed with the sprint planning on the above basis.
+
+Thanks,
+Kiran
 
