@@ -87,3 +87,22 @@ grep -nE "powerapps|clientsdk" /tmp/test3-net.log
 
 NETDEBUG_TRACE=1 .venv/bin/python -m pytest field/tests/web/test_life_events_family_goal.py -v -s --no-header --dist=no -p no:allure_pytest --import-mode=importlib -o addopts=
 
+
+Hi Swapnil,
+
+Taking this to you directly — another round between Abhinav and me won't add anything.
+
+One thing needs closing in writing. What I took from the call was [state exactly what was agreed]. Abhinav's mail says his frontend allocation "remains as it is currently, 3 PDs per sprint" — that's the position before the call, not its outcome. Sprint planning depends on which one stands.
+
+Simplest fix: I'll commit to the frontend targets with the three of us already contributing, and Abhinav moves to 100% backend. That ends the overlap, ends the ambiguity over who picks which frontend stories, and gives backend full capacity.
+
+That commitment is grounded. The framework structure, Allure reporting, CI pipeline, devpod setup, the CDP workaround for headed execution, TigerVNC, parallel run config, job email notifications, MR template and role-based user selection were all built by me. Abhinav's contribution has been a set of scripts plus one credential-management piece that is no longer in use.
+
+Separately, worth flagging: backend sits entirely with one person and no one else knows the implementation. The UI framework doesn't have that exposure — the team knows it and several contribute. If Abhinav moves fully to backend, that's the right moment to bring someone else up to speed there.
+
+On demos — raised more than once now, never by me, and here it sits inside a bandwidth discussion it has nothing to do with. My position, for the record: whoever builds a piece presents it. That's how we've always worked and no one has objected. Timing and sequencing are yours, and were never in question.
+
+Could you confirm the allocation in writing? I'll plan the sprint around it and won't take more of your time on this.
+
+Kiran
+
