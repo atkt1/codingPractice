@@ -88,26 +88,21 @@ grep -nE "powerapps|clientsdk" /tmp/test3-net.log
 NETDEBUG_TRACE=1 .venv/bin/python -m pytest field/tests/web/test_life_events_family_goal.py -v -s --no-header --dist=no -p no:allure_pytest --import-mode=importlib -o addopts=
 
 
-Hi Swapnil,
+Hi,
 
-Taking this to you directly — another round between Abhinav and me won't add anything.
+To keep production deployment checks reliable and quick to run, I suggest starting with a small set of high-priority scenarios—perhaps up to five initially.
 
-This isn't about bandwidth. It's about what SPOC means in practice, and I'd like it stated in writing.
+From an automation standpoint, the following would be good candidates:
 
-I've understood the SPOC role as being accountable for frontend automation delivery — which necessarily includes sequencing the work. Abhinav's mail reads ownership as shared equally across four people, and holds two positions that can't both stand: "You are more than welcome to assign, if you feel anything is priority" and "Based on priority & automation feasibility, I will be picking stories." If I'm accountable for the outcome while stories are picked independently of me, the role is nominal.
+* **Safe for production:** Preferably read-only checks that avoid modifying live customer records or triggering real communications, transactions, or business processes.
+* **Repeatable:** Checks using known, predictable test data, so they can run repeatedly without depending on changing record counts or whichever record appears first.
+* **Short and independent:** Each scenario verifies one clear outcome with minimal setup, without relying on another scenario or manual intervention.
 
-Either arrangement works for me — I'd just ask you to call which one it is:
+Examples could include opening a critical module, searching for and opening a known record, or verifying expected fields and values.
 
-Abhinav continues contributing to UI automation, and his frontend stories come through me as they do for everyone else; or
-He works 100% on backend, and I carry the frontend target with the three of us already contributing.
+It would help if the proposed scenarios included the **priority, user role, test data, steps, and expected result**. We can then review their automation feasibility together and agree on a focused initial scope.
 
-The second is entirely workable. The framework structure, Allure reporting, CI pipeline, devpod setup, the CDP workaround for headed execution, TigerVNC, parallel run config, job email notifications, MR template and role-based user selection were all built by me. Abhinav's contribution has been a set of scripts plus one credential-management piece that is no longer in use.
-
-Separately, worth flagging: backend sits entirely with one person and no one else knows the implementation. The UI framework doesn't have that exposure — the team knows it and several contribute. If Abhinav moves fully to backend, that's the right moment to bring someone else up to speed there.
-
-On demos — raised more than once now, never by me, and here it sits inside a discussion it has nothing to do with. My position, for the record: whoever builds a piece presents it. That's how we've always worked and no one has objected. Timing and sequencing are yours, and were never in question.
-
-Could you confirm in writing which of the two applies? I'll plan around it and won't take more of your time on this.
-
+Regards,
 Kiran
+
 
